@@ -139,9 +139,9 @@ local function permstrtonum(permstr)
     return result
   end
 
-  return tostring(permpart(str:sub(1,3)))
-      .. tostring(permpart(str:sub(4,6)))
-      .. tostring(permpart(str:sub(7,9)))
+  return tostring(permpart(permstr:sub(1,3)))
+      .. tostring(permpart(permstr:sub(4,6)))
+      .. tostring(permpart(permstr:sub(7,9)))
 end
 
 -- }}}
@@ -154,11 +154,16 @@ local function copy_file(oldname, newname)
   local file, source_content
 
   file = assert(io.open(oldname, "r"))
+  permstr = lfs.attributes(oldname, "permissions")
+  permnum = permstrtonum(permstr)
+
   source_content = assert(file:read("*all"))
   file:close()
   file = assert(io.open(newname, "w+"))
   assert(file:write(source_content))
   file:close()
+  logger.info("executing: " .. "chmod " .. permnum .. " " .. newname)
+  assert(os.execute("chmod " .. permnum .. " " .. newname))
 end
 
 local function split_files_dirs(list)
