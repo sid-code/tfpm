@@ -26,6 +26,7 @@ function frontend.install(db, options)
 end
 
 function frontend.remove(db, options)
+  tfpm.uninstall_packages(db, options.packages);
 end
 
 function frontend.query(db, options)
